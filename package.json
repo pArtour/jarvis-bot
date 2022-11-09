@@ -1,0 +1,19 @@
+{
+  "name": "jarvis-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot named Jarvis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pArtour/jarvis-bot.git"
+  },
+  "author": "Artur Pushkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pArtour/jarvis-bot/issues"
+  },
+  "homepage": "https://github.com/pArtour/jarvis-bot#readme"
+}
