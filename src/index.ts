@@ -1,7 +1,8 @@
 import { Telegraf } from 'telegraf';
 import * as dotenv from 'dotenv';
 import path from 'path';
-import { connectToMongo } from './utils/mongo';
+import userService from './services/user.service';
+import { connectToMongo } from './utils/prisma';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -10,7 +11,19 @@ function bootstrap() {
 
   const bot = new Telegraf(process.env.BOT_TOKEN);
 
-  bot.start((ctx) => ctx.reply('Welcome'));
+  bot.start(async (ctx) => {
+    console.log(ctx.update.message.from);
+    const userInput = {
+      userId: ctx.update.message.from.id,
+      first_name: ctx.update.message.from.first_name,
+      last_name: ctx.update.message.from.last_name,
+      username: ctx.update.message.from.username,
+    };
+    const user = await userService.createUser(userInput);
+    // console.log({user});
+
+    ctx.reply(`Welcome`);
+  });
 
   bot.help((ctx) => {
     ctx.replyWithHTML(`
@@ -25,7 +38,18 @@ function bootstrap() {
   });
 
   bot.on('sticker', (ctx) => ctx.reply('👍'));
-  bot.hears('hi', (ctx) => ctx.reply('Hey there'));
+  bot.hears('hi', async (ctx) => {
+    ctx.reply('Hey there');
+
+    ctx.reply(JSON.stringify(ctx.update.message.from));
+    const user = await userService.findUser({ id: ctx.update.message.from.id });
+
+    if (!user) {
+      console.log('NO USER');
+    }
+
+    console.log({ userFromDB: user });
+  });
   bot.launch();
 
   // Enable graceful stop
